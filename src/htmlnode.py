@@ -74,7 +74,7 @@ class ParentNode(HTMLNode):
 def text_node_to_html_node(text_node: TextNode):
     match text_node.text_type:
         case TextType.PLAIN_TEXT:
-            return LeafNode(tag=None, value=text_node.text)
+            return LeafNode(tag=None, value=text_node.text) # type: ignore
         case TextType.BOLD_TEXT:
             return LeafNode(tag="b", value=text_node.text)
         case TextType.ITALIC_TEXT:
