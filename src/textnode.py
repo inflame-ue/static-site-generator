@@ -18,10 +18,10 @@ class TextNode:
 
     def __eq__(self, other: 'TextNode'):
         is_text_eq = self.text == other.text
-        is_text_type_eq = self.text_type == other_text_type
+        is_text_type_eq = self.text_type == other.text_type
         is_url_eq = self.url == other.url
 
-        return all(is_text_eq, is_text_type_eq, is_url_eq)
+        return all((is_text_eq, is_text_type_eq, is_url_eq))
     
     def __repr__(self):
         return f'TextNode({self.text}, {self.text_type.value}, {self.url})'
