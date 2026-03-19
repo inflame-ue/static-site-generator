@@ -1,5 +1,6 @@
 from textnode import TextNode, TextType
 
+
 class HTMLNode:
     def __init__(
         self,
@@ -49,24 +50,22 @@ class LeafNode(HTMLNode):
 
 
 class ParentNode(HTMLNode):
-    
     def __init__(
         self, tag: str, children: list[HTMLNode], props: dict[str, str] | None = None
     ):
         super().__init__(tag=tag, children=children, props=props)
-    
+
     def to_html(self):
-        
         if not self.tag:
             raise ValueError("ParentNode must have a tag")
-        
+
         if self.children is None:
             raise ValueError("ParentNode must have children")
-        
+
         html_output = []
         for child in self.children:
             html_output.append(child.to_html())
-        
+
         parent_props = self.props_to_html()
         return f"<{self.tag}{parent_props}>{''.join(html_output)}</{self.tag}>"
 
@@ -74,7 +73,7 @@ class ParentNode(HTMLNode):
 def text_node_to_html_node(text_node: TextNode):
     match text_node.text_type:
         case TextType.PLAIN_TEXT:
-            return LeafNode(tag=None, value=text_node.text) # type: ignore
+            return LeafNode(tag=None, value=text_node.text)  # type: ignore
         case TextType.BOLD_TEXT:
             return LeafNode(tag="b", value=text_node.text)
         case TextType.ITALIC_TEXT:
@@ -82,10 +81,12 @@ def text_node_to_html_node(text_node: TextNode):
         case TextType.CODE_TEXT:
             return LeafNode(tag="code", value=text_node.text)
         case TextType.LINK_TEXT:
-            return LeafNode(tag="a", value=text_node.text, props={"href": text_node.url})
+            return LeafNode(
+                tag="a", value=text_node.text, props={"href": text_node.url}
+            )
         case TextType.IMAGE_TEXT:
-            return LeafNode(tag="img", value="", props={"src": text_node.url, "alt": text_node.text})
+            return LeafNode(
+                tag="img", value="", props={"src": text_node.url, "alt": text_node.text}
+            )
         case _:
             raise Exception("invalid TextType enum type")
-    
-
