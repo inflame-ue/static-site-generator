@@ -4,6 +4,8 @@ from inline import (
     extract_markdown_images,
     extract_markdown_links,
     split_nodes_delimiter,
+    split_nodes_image,
+    split_nodes_link,
 )
 from textnode import TextNode, TextType
 
@@ -65,6 +67,48 @@ class TestSplitNodesDelimiter(unittest.TestCase):
 
         with self.assertRaises(Exception):
             split_nodes_delimiter([node], "**", TextType.BOLD_TEXT)
+
+
+class TestSplitImageLinkDelimiter(unittest.TestCase):
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.PLAIN_TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.PLAIN_TEXT),
+                TextNode(
+                    "image", TextType.IMAGE_TEXT, "https://i.imgur.com/zjjcJKZ.png"
+                ),
+                TextNode(" and another ", TextType.PLAIN_TEXT),
+                TextNode(
+                    "second image",
+                    TextType.IMAGE_TEXT,
+                    "https://i.imgur.com/3elNhQu.png",
+                ),
+            ],
+            new_nodes,
+        )
+
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with a [link](https://i.imgur.com/zjjcJKZ.png) and another [second link](https://i.imgur.com/3elNhQu.png)",
+            TextType.PLAIN_TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.PLAIN_TEXT),
+                TextNode("link", TextType.LINK_TEXT, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.PLAIN_TEXT),
+                TextNode(
+                    "second link", TextType.LINK_TEXT, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
 
 
 class TestMarkdownExtraction(unittest.TestCase):

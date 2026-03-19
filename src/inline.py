@@ -74,12 +74,12 @@ def split_nodes_link(old_nodes: list[TextNode]):
         for link_information in links_information:
             link_alt, links_link = link_information
             before_section, after_section = original_text.split(
-                f"![{link_alt}]({links_link})"
+                f"[{link_alt}]({links_link})"
             )
 
             if before_section:
                 new_nodes.append(TextNode(before_section, TextType.PLAIN_TEXT))
-            new_nodes.append(TextNode(link_alt, TextType.IMAGE_TEXT, url=links_link))
+            new_nodes.append(TextNode(link_alt, TextType.LINK_TEXT, url=links_link))
 
             original_text = after_section
 
@@ -95,5 +95,3 @@ def extract_markdown_images(text) -> list[tuple[str, str]]:
 
 def extract_markdown_links(text) -> list[tuple[str, str]]:
     return re.findall(r"\[(.*?)\]\((.*?)\)", text)
-
-
