@@ -35,6 +35,10 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
     new_nodes = []
 
     for old_node in old_nodes:
+        if old_node.text_type is not TextType.PLAIN_TEXT:
+            new_nodes.append(old_node)
+            continue
+
         original_text = old_node.text
         images_information = extract_markdown_images(original_text)
 
@@ -45,7 +49,7 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
         for image_information in images_information:
             image_alt, image_link = image_information
             before_section, after_section = original_text.split(
-                f"![{image_alt}]({image_link})"
+                f"![{image_alt}]({image_link})", 1
             )
 
             if before_section:
@@ -64,6 +68,10 @@ def split_nodes_link(old_nodes: list[TextNode]):
     new_nodes = []
 
     for old_node in old_nodes:
+        if old_node.text_type is not TextType.PLAIN_TEXT:
+            new_nodes.append(old_node)
+            continue
+
         original_text = old_node.text
         links_information = extract_markdown_links(original_text)
 
@@ -74,7 +82,7 @@ def split_nodes_link(old_nodes: list[TextNode]):
         for link_information in links_information:
             link_alt, links_link = link_information
             before_section, after_section = original_text.split(
-                f"[{link_alt}]({links_link})"
+                f"[{link_alt}]({links_link})", 1
             )
 
             if before_section:
@@ -89,9 +97,20 @@ def split_nodes_link(old_nodes: list[TextNode]):
     return new_nodes
 
 
-def extract_markdown_images(text) -> list[tuple[str, str]]:
+def text_to_textnodes(text: str) -> list[TextNode]:
+    text_node = TextNode(text, TextType.PLAIN_TEXT)
+    processed_nodes = split_nodes_delimiter([text_node], "**", TextType.BOLD_TEXT)
+    processed_nodes = split_nodes_delimiter(processed_nodes, "_", TextType.ITALIC_TEXT)
+    processed_nodes = split_nodes_delimiter(processed_nodes, "`", TextType.CODE_TEXT)
+    processed_nodes = split_nodes_image(processed_nodes)
+    processed_nodes = split_nodes_link(processed_nodes)
+
+    return processed_nodes
+
+
+def extract_markdown_images(text: str) -> list[tuple[str, str]]:
     return re.findall(r"\!\[(.*?)\]\((.*?)\)", text)
 
 
-def extract_markdown_links(text) -> list[tuple[str, str]]:
-    return re.findall(r"\[(.*?)\]\((.*?)\)", text)
+def extract_markdown_links(text: str) -> list[tuple[str, str]]:
+    return re.findall(r"(?<!!)\[(.*?)\]\((.*?)\)", text)
