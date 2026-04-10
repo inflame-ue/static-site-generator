@@ -82,11 +82,11 @@ def text_node_to_html_node(text_node: TextNode):
             return LeafNode(tag="code", value=text_node.text)
         case TextType.LINK_TEXT:
             return LeafNode(
-                tag="a", value=text_node.text, props={"href": text_node.url}
+                tag="a", value=text_node.text, props={"href": text_node.url} # type: ignore
             )
         case TextType.IMAGE_TEXT:
             return LeafNode(
-                tag="img", value="", props={"src": text_node.url, "alt": text_node.text}
+                tag="img", value="", props={"src": text_node.url, "alt": text_node.text} # type: ignore
             )
         case _:
             raise Exception("invalid TextType enum type")
