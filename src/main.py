@@ -1,10 +1,26 @@
 from textnode import TextNode, TextType
+import shutil
+import os
 
+
+def copy_dir(source: str, destination: str) -> None:
+    # we need to ensure that the copy is clean
+    if os.path.exists(destination):
+        shutil.rmtree(destination)
+    os.makedirs(destination)
+    
+    for filename in os.listdir(source):
+        file_path = os.path.join(source, filename)
+        if os.path.isfile(file_path):
+            shutil.copy(file_path, destination)
+        else:
+            dest_file_path = os.path.join(destination, filename)
+            os.makedirs(dest_file_path)
+            copy_dir(file_path, dest_file_path)
+      
 
 def main():
-    text_node = TextNode("This is a testing node", TextType.PLAIN_TEXT)
-    print(text_node)
-
+    copy_dir("static", "public")
 
 if __name__ == "__main__":
     main()
