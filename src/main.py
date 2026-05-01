@@ -1,4 +1,5 @@
 import os
+import pathlib
 import shutil
 
 from page import generate_page
@@ -27,7 +28,8 @@ def generate_pages(
         file_path = os.path.join(dir_path_content, filename)
         dest_file_path = os.path.join(dir_path_public, filename)
         if os.path.isfile(file_path) and os.path.split(file_path)[1].endswith(".md"):
-            generate_page(file_path, template_path, dest_file_path)
+            dest_file_path = pathlib.Path(dest_file_path).with_suffix(".html")
+            generate_page(file_path, template_path, dest_file_path) # type: ignore
         else:
             generate_pages(file_path, template_path, dest_file_path)
 
