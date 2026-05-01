@@ -36,7 +36,7 @@ class LeafNode(HTMLNode):
         super().__init__(tag=tag, value=value, props=props)
 
     def to_html(self):
-        if not self.value:
+        if self.value is None:
             raise ValueError("All leaf nodes must have a value.")
 
         if not self.tag:
@@ -82,11 +82,13 @@ def text_node_to_html_node(text_node: TextNode):
             return LeafNode(tag="code", value=text_node.text)
         case TextType.LINK_TEXT:
             return LeafNode(
-                tag="a", value=text_node.text, props={"href": text_node.url} # type: ignore
+                tag="a",
+                value=text_node.text,
+                props={"href": text_node.url},  # type: ignore
             )
         case TextType.IMAGE_TEXT:
             return LeafNode(
-                tag="img", value="", props={"src": text_node.url, "alt": text_node.text} # type: ignore
+                tag="img",
+                value="",
+                props={"src": text_node.url, "alt": text_node.text},  # type: ignore
             )
-        case _:
-            raise Exception("invalid TextType enum type")

@@ -7,6 +7,6 @@ def extract_title(markdown: str) -> str:
             else:
                 break
         if heading_level == 1:
-            return line.lstrip("#")
+            return line.lstrip("#").lstrip()
 
     raise Exception("No title found in the markdown document")
