@@ -38,8 +38,8 @@ def generate_pages(
 def main():
     basepath = "/"
     if len(sys.argv) > 1:
-        basepath = sys.argv[1] + "/"
- 
+        basepath = sys.argv[1]
+
     copy_dir("static", "docs")
     generate_pages("content/", "template.html", "docs/", basepath)
 
