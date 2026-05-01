@@ -151,4 +151,3 @@ class TestTextToTextNodes(unittest.TestCase):
         ]
 
         self.assertListEqual(text_to_textnodes(markdown_text), expected)
-
